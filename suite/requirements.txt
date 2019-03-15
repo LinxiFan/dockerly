@@ -1,0 +1,25 @@
+# ==== arxiv-sanity-preserver ==== 
+# feedparser is only if you want to scrape arxiv
+feedparser
+numpy
+scipy
+scikit-learn
+pdftotext
+
+# twitter
+python-twitter
+pytz
+
+# the following are only for serve.py
+python-dateutil
+flask
+flask_limiter
+tornado
+pymongo
+
+# ===== other =====
+tabulate
+imageio
+benedict
+nanolog
+psutil
