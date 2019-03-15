@@ -19,9 +19,17 @@ RUN conda install -y ffmpeg -c conda-forge
 COPY requirements.txt /mylibs/
 RUN pip install -r /mylibs/requirements.txt
 
-RUN apt-get install -y imagemagick
+RUN apt-get install -y sudo vim
 
-RUN useradd -r -u 15560 -g root jimfan
+# imagemagick is paranoid on permission, you need to set its policy explicitly
+RUN apt-get install -y imagemagick
+RUN sed -i 's/rights="none"/rights="read|write"/g' /etc/ImageMagick-6/policy.xml
+
+# Enable sudo _within_ the docker container
+# https://stackoverflow.com/questions/25845538/how-to-use-sudo-inside-a-docker-container
+RUN adduser -u 15560 --disabled-password --gecos '' jimfan
+RUN adduser jimfan sudo
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER jimfan
 
 WORKDIR /home/jimfan

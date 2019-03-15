@@ -53,7 +53,7 @@ class Dockerwrap:
         return self
 
     def run(self, cmd):
-        cmd = 'docker run -ti {} {} {}'.format(
+        cmd = 'docker run -ti --privileged {} {} {}'.format(
             self.get_mount_option(self.host_root, self.container_root),
             self.default_image,
             shlex.quote(cmd),
@@ -69,7 +69,7 @@ class Dockerwrap:
             'you must run this command within subpaths of `host_root` (in ~/.dockerwrap.yml) because it will be projected into relative path within the container.'
         host_relpath = os.path.relpath(host_cwd, self.host_root)
         container_abspath = os.path.join(self.container_root, host_relpath)
-        cmd = 'docker run -ti --workdir="{}" {} {} {}'.format(
+        cmd = 'docker run -ti --privileged --workdir="{}" {} {} {}'.format(
             container_abspath,
             self.get_mount_option(self.host_root, self.container_root),
             self.default_image,
