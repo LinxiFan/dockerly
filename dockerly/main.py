@@ -23,6 +23,7 @@ def _get_asset(name):
     "fetch from dockerly/assets"
     return pkg_resources.resource_filename('dockerly.assets', name)
 
+
 def generate_config():
     print('Generating default config for Dockerly at ' + DOCKERLY_YML)
     fname = _get_asset('template_dockerly.yml')
@@ -61,6 +62,7 @@ def build():
 def run_exec():
     cmd = _collect_sysargs()
     dockerly = Dockerly()
+    # dockerly.dry_run(True)
     if cmd.strip() == '':
         cmd = 'bash'  # run interative by default
     dockerly.run(cmd)
@@ -69,6 +71,7 @@ def run_exec():
 def run_bash():
     cmd = _collect_sysargs()
     dockerly = Dockerly()
+    # dockerly.dry_run(True)
     if cmd.strip() == '':
         cmd = 'bash'  # run interative by default
     dockerly.run_from_cwd(cmd)
