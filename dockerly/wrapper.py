@@ -19,11 +19,11 @@ def is_in_path(file, folder):
 
 # docker run -ti  -v /sailhome/jimfan/vision:/home/jimfan/vision:rw $(URL) bash
 class Dockerwrap:
-    def __init__(self, config_file='~/.dockerwrap.yml'):
+    def __init__(self, config_file='~/.dockerly.yml'):
         try:
             self.config = BeneDict.load_yaml_file(os.path.expanduser(config_file))
         except FileNotFoundError:
-            print('must specify a config file ~/.dockerwrap.yml')
+            print('must specify a config file ~/.dockerly.yml')
             raise
         for key in ['container_root', 'host_root', 'default_image']:
             assert key in self.config, 'config "{}" missing'.format(key)
@@ -66,7 +66,7 @@ class Dockerwrap:
         """
         host_cwd = os.getcwd()
         assert is_in_path(host_cwd, self.host_root), \
-            'you must run this command within subpaths of `host_root` (in ~/.dockerwrap.yml) because it will be projected into relative path within the container.'
+            'you must run this command within subpaths of `host_root` (in ~/.dockerly.yml) because it will be projected into relative path within the container.'
         host_relpath = os.path.relpath(host_cwd, self.host_root)
         container_abspath = os.path.join(self.container_root, host_relpath)
         cmd = 'docker run -ti --privileged --workdir="{}" {} {} {}'.format(
