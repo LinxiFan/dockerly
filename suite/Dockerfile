@@ -25,14 +25,20 @@ RUN apt-get install -y sudo vim
 RUN apt-get install -y imagemagick
 RUN sed -i 's/rights="none"/rights="read|write"/g' /etc/ImageMagick-6/policy.xml
 
+# args from `docker build --build-arg key=value`
+# https://vsupalov.com/docker-arg-vs-env/
+ARG USER=docker
+ARG UID=1001
+RUN echo USER=$USER, UID=$UID
+
 # Enable sudo _within_ the docker container
 # https://stackoverflow.com/questions/25845538/how-to-use-sudo-inside-a-docker-container
-RUN adduser -u 15560 --disabled-password --gecos '' jimfan
-RUN adduser jimfan sudo
+RUN adduser -u $UID --disabled-password --gecos '' $USER
+RUN adduser $USER sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-USER jimfan
+USER $USER
 
-WORKDIR /home/jimfan
+WORKDIR /home/$USER
 
 COPY entrypoint.py /mylibs/entrypoint.py
 ENTRYPOINT ["/mylibs/entrypoint.py"]

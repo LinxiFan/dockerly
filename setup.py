@@ -8,20 +8,20 @@ def read(fname):
 
 
 setup(
-    name='dockerwrap',
+    name='dockerly',
     version='0.1',
     author='Jim Fan',
-    url='http://github.com/LinxiFan/dockerwrap',
+    url='http://github.com/LinxiFan/dockerly',
     description='',
     license='GPLv3',
     packages=[
-        package for package in find_packages() if package.startswith("dockerwrap")
+        package for package in find_packages() if package.startswith("dockerly")
     ],
     entry_points={
         'console_scripts': [
-            'dexec=dockerwrap.wrapper:main_exec',
-            'dbash=dockerwrap.wrapper:main_bash',
-            'dpython=dockerwrap.wrapper:main_python',
+            'dexec=dockerly.wrapper:main_exec',
+            'dbash=dockerly.wrapper:main_bash',
+            'dpython=dockerly.wrapper:main_python',
         ]
     },
     install_requires=[
