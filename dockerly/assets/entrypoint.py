@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+This file is meant to be ENTRYPOINT in Dockerfile
+"""
 import os
 import sys
 import shlex

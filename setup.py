@@ -19,9 +19,11 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'dexec=dockerly.wrapper:main_exec',
-            'dbash=dockerly.wrapper:main_bash',
-            'dpython=dockerly.wrapper:main_python',
+            'dockerly_generate_config=dockerly.main:generate_config',
+            'dbuild=dockerly.main:build',
+            'dexec=dockerly.main:run_exec',
+            'dbash=dockerly.main:run_bash',
+            'dpython=dockerly.main:run_python',
         ]
     },
     install_requires=[

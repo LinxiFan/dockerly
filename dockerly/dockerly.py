@@ -23,12 +23,16 @@ class Dockerly:
         try:
             self.config = BeneDict.load_yaml_file(os.path.expanduser(config_file))
         except FileNotFoundError:
-            print('must specify a config file ~/.dockerly.yml')
+            print('must specify a config file ' + config_file)
             raise
         for key in ['container_root', 'host_root', 'default_image']:
             assert key in self.config, 'config "{}" missing'.format(key)
+        for k, v in self.config.items():
+            if v == '_fill_yours_':
+                raise ValueError('please fill in key "{}" in {}'.format(k, config_file))
         self.container_root = self.config.container_root
-        assert os.path.isabs(self.container_root)
+        assert os.path.isabs(self.container_root), \
+            'container_root must be an absolute path: ' + self.container_root
         # must use realpath, otherwise relative path will be wrong
         self.host_root = os.path.realpath(os.path.expanduser(self.config.host_root))
         self.default_image = self.config.default_image
@@ -40,7 +44,7 @@ class Dockerly:
         else:
             os.system(cmd)
 
-    def get_mount_option(self, host_root, container_root, read_only=False):
+    def _mount_flag(self, host_root, container_root, read_only=False):
         host_root = os.path.expanduser(host_root)
         if read_only:
             read_option = 'ro'
@@ -54,7 +58,7 @@ class Dockerly:
 
     def run(self, cmd):
         cmd = 'docker run -ti --privileged {} {} {}'.format(
-            self.get_mount_option(self.host_root, self.container_root),
+            self._mount_flag(self.host_root, self.container_root),
             self.default_image,
             shlex.quote(cmd),
         )
@@ -69,40 +73,11 @@ class Dockerly:
             'you must run this command within subpaths of `host_root` (in ~/.dockerly.yml) because it will be projected into relative path within the container.'
         host_relpath = os.path.relpath(host_cwd, self.host_root)
         container_abspath = os.path.join(self.container_root, host_relpath)
-        cmd = 'docker run -ti --privileged --workdir="{}" {} {} {}'.format(
+        cmd = 'docker run -ti -p 8888:8888 --privileged --workdir="{}" {} {} {}'.format(
             container_abspath,
-            self.get_mount_option(self.host_root, self.container_root),
+            self._mount_flag(self.host_root, self.container_root),
             self.default_image,
             shlex.quote(cmd),
         )
         self._run_system(cmd)
 
-
-def _collect_sysargs():
-    args = sys.argv[1:]
-    if len(args) == 1:
-        return args[0]
-    else:
-        return ' '.join(map(shlex.quote, args))
-
-
-def main_exec():
-    cmd = _collect_sysargs()
-    wrapper = Dockerly()
-    if cmd.strip() == '':
-        cmd = 'bash'  # run interative by default
-    wrapper.run(cmd)
-
-
-def main_bash():
-    cmd = _collect_sysargs()
-    wrapper = Dockerly()
-    if cmd.strip() == '':
-        cmd = 'bash'  # run interative by default
-    wrapper.run_from_cwd(cmd)
-
-
-def main_python():
-    cmd = _collect_sysargs()
-    wrapper = Dockerly()
-    wrapper.run_from_cwd('python ' + cmd)

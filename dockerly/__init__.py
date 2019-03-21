@@ -1,1 +1,1 @@
-from .wrapper import Dockerly
+from .dockerly import Dockerly
