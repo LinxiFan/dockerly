@@ -18,7 +18,7 @@ def is_in_path(file, folder):
 
 
 # docker run -ti  -v /sailhome/jimfan/vision:/home/jimfan/vision:rw $(URL) bash
-class Dockerwrap:
+class Dockerly:
     def __init__(self, config_file='~/.dockerly.yml'):
         try:
             self.config = BeneDict.load_yaml_file(os.path.expanduser(config_file))
@@ -88,7 +88,7 @@ def _collect_sysargs():
 
 def main_exec():
     cmd = _collect_sysargs()
-    wrapper = Dockerwrap()
+    wrapper = Dockerly()
     if cmd.strip() == '':
         cmd = 'bash'  # run interative by default
     wrapper.run(cmd)
@@ -96,7 +96,7 @@ def main_exec():
 
 def main_bash():
     cmd = _collect_sysargs()
-    wrapper = Dockerwrap()
+    wrapper = Dockerly()
     if cmd.strip() == '':
         cmd = 'bash'  # run interative by default
     wrapper.run_from_cwd(cmd)
@@ -104,5 +104,5 @@ def main_bash():
 
 def main_python():
     cmd = _collect_sysargs()
-    wrapper = Dockerwrap()
+    wrapper = Dockerly()
     wrapper.run_from_cwd('python ' + cmd)
