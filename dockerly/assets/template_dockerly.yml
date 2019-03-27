@@ -1,0 +1,7 @@
+default_image: _fill_yours_
+container_root: _fill_yours_
+host_root: _fill_yours_
+docker_build_dir: ./
+nvidia: false
+ports:  # host_port:container_port, follow docker run --publish
+  - 8000-9000:8000-9000
