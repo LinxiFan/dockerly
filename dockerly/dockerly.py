@@ -37,6 +37,7 @@ class Dockerly:
         self.host_root = os.path.realpath(os.path.expanduser(self.config.host_root))
         self.ports = self.config.ports
         self.default_image = self.config.default_image
+        self._docker_exe = 'nvidia-docker' if self.config.nvidia else 'docker'
         self._dry_run = False
 
     def _run_system(self, cmd):
@@ -67,7 +68,8 @@ class Dockerly:
         """
         other_options: flags to pass to docker run
         """
-        cmd = 'docker run -ti --privileged {others} {mount} {ports} {image} {cmd}'.format(
+        cmd = '{docker} run -ti --privileged {others} {mount} {ports} {image} {cmd}'.format(
+            docker=self._docker_exe,  # nvidia-docker
             others=' '.join(other_options),
             ports=self._ports_flag(),
             mount=self._mount_flag(self.host_root, self.container_root),
