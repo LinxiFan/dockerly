@@ -51,6 +51,10 @@ RUN mkdir -p /data/db /data/configdb \
     && chown -R mongodb:mongodb /data/db /data/configdb
 VOLUME /data/db /data/configdb
 
+RUN mkdir /dockerly
+COPY entrypoint.py /dockerly/
+RUN chmod +x /dockerly/entrypoint.py
+
 # args from `docker build --build-arg key=value`
 # https://vsupalov.com/docker-arg-vs-env/
 ARG USER=docker
@@ -64,10 +68,6 @@ RUN adduser $USER sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER $USER
 
-WORKDIR /home/$USER
-
-COPY entrypoint.py /mylibs/entrypoint.py
-
 # EXPOSE 8888
-ENTRYPOINT ["/mylibs/entrypoint.py"]
+ENTRYPOINT ["/dockerly/entrypoint.py"]
 

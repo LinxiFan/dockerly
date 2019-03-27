@@ -25,6 +25,10 @@ RUN apt-get install -y sudo vim
 RUN apt-get install -y imagemagick
 RUN sed -i 's/rights="none"/rights="read|write"/g' /etc/ImageMagick-6/policy.xml
 
+RUN mkdir /dockerly
+COPY entrypoint.py /dockerly/
+RUN chmod +x /dockerly/entrypoint.py
+
 # args from `docker build --build-arg key=value`
 # https://vsupalov.com/docker-arg-vs-env/
 ARG USER=docker
@@ -38,7 +42,4 @@ RUN adduser $USER sudo
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER $USER
 
-WORKDIR /home/$USER
-
-COPY entrypoint.py /mylibs/entrypoint.py
-ENTRYPOINT ["/mylibs/entrypoint.py"]
+ENTRYPOINT ["/dockerly/entrypoint.py"]
